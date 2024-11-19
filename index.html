@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bharathanatyam Pose Detector</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f7f7f7;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 600px;
+        }
+        .card {
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="text-center">Bharathanatyam Pose Detector</h2>
+            <p class="text-center">Upload a photo to detect the pose.</p>
+            <form id="poseForm" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="fileInput" class="form-label">Choose an Image</label>
+                    <input type="file" class="form-control" id="fileInput" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Upload & Predict</button>
+            </form>
+        </div>
+    </div>
+    <div id="result" class="result" style="display: none;"></div>
+</div>
+
+<script>
+    const form = document.getElementById('poseForm');
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const fileInput = document.getElementById('fileInput');
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+
+        // Call your backend Flask API
+        const response = await fetch('/predict', {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        
+        // Display the result
+        const resultDiv = document.getElementById('result');
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `<h4>Predicted Pose: ${result.predicted_pose}</h4>`;
+    });
+</script>
+
+</body>
+</html>
